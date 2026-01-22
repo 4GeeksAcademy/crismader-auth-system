@@ -1,0 +1,161 @@
+.home {
+  min-height: 100vh;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  font-family: Arial, Helvetica, sans-serif;
+  background: #f3f4f6;
+  padding: 24px;
+}
+
+.login-container {
+  width: 100%;
+  max-width: 420px;
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.login-card,
+.secrets-card {
+  background: white;
+  border: 1px solid #e6e6e6;
+  border-radius: 10px;
+  padding: 22px;
+  box-shadow: 0 8px 20px rgba(0, 0, 0, 0.06);
+}
+
+.title {
+  margin: 0;
+  font-size: 22px;
+  font-weight: 700;
+  text-align: center;
+}
+
+.subtitle {
+  margin-top: 8px;
+  margin-bottom: 18px;
+  text-align: center;
+  color: #444;
+  font-size: 14px;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.label {
+  font-size: 14px;
+  font-weight: 600;
+  color: #222;
+}
+
+.input {
+  padding: 10px 12px;
+  border: 1px solid #cfcfcf;
+  border-radius: 8px;
+  font-size: 14px;
+  outline: none;
+}
+
+.input:focus {
+  border-color: #222;
+}
+
+.button {
+  width: 100%;
+  padding: 10px 12px;
+  border: none;
+  border-radius: 8px;
+  font-size: 14px;
+  font-weight: 700;
+  cursor: pointer;
+  background: #111;
+  color: white;
+}
+
+.button:hover {
+  background: #000;
+}
+
+.button-outline {
+  background: transparent;
+  border: 1px solid #111;
+  color: #111;
+}
+
+.button-outline:hover {
+  background: #111;
+  color: white;
+}
+
+.error {
+  border: 1px solid #ffb5b5;
+  background: #ffe8e8;
+  color: #7a0000;
+  padding: 10px 12px;
+  border-radius: 8px;
+  font-size: 14px;
+}
+
+.logged-box {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.logged-text {
+  margin: 0;
+  font-size: 14px;
+  text-align: center;
+  color: #155724;
+  background: #d4edda;
+  border: 1px solid #c3e6cb;
+  padding: 10px 12px;
+  border-radius: 8px;
+}
+
+.secrets-title {
+  margin-top: 0;
+  margin-bottom: 12px;
+  font-size: 16px;
+  font-weight: 700;
+}
+
+.secrets-loading {
+  margin: 0;
+  color: #666;
+  font-size: 14px;
+}
+
+.secrets-list {
+  margin: 0;
+  padding-left: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.secret-item {
+  font-size: 14px;
+  color: #222;
+}
+
+.demo-box {
+  text-align: center;
+  color: #555;
+  font-size: 13px;
+  line-height: 1.4;
+}
+
+.demo-text {
+  margin: 3px 0;
+}

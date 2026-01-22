@@ -1,138 +1,171 @@
-import React, { useEffect, useState } from "react"
+import React, { useEffect, useState } from "react";
+import "../index.css";
 
 export const Home = () => {
+  const baseApiUrl = import.meta.env.VITE_BACKEND_URL;
 
-	const baseApiUrl = import.meta.env.VITE_BACKEND_URL
+  const [user, setUser] = useState(null);
+  const [token, setToken] = useState("");
 
-	const [user, setUser] = useState(null);
-	const [token, setToken] = useState("");
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+
+  const [secretos, setSecretos] = useState([]);
+  const [error, setError] = useState(null);
+
+  const login = async (e) => {
+    e.preventDefault();
+    setError(null);
+
+    try {
+      if (!baseApiUrl) throw new Error("No se ha conseguido conectar con el backend");
+
+      const response = await fetch(baseApiUrl + "/login", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          email: email,
+          password: password
+        })
+      });
+
+      const data = await response.json();
+
+      if(!email || !password){
+        alert("Tienes que rellenar todos los campos")
+        return
+      } 
+
+      if (!response.ok) {
+        setError(data.msg || "Error en login");
+        return;
+      }
+
+      setUser(data);
+      setToken(data.access_token);
 
 
-	const [email, setEmail] = useState("");
-	const [password, setPassword] = useState("");
+    } catch (error) {
+      console.error(error);
+      console.log("Hola Facu, qué tal corrigiendo el ejercicio????")
+      setError("Error al intentar el login");
+    }
+  };
 
-	const [secretos, setSecretos] = useState([]);
+  const getSecrets = async () => {
+    try {
+      const response = await fetch(baseApiUrl + "/secret", {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      });
 
-	const[error, setError] = useState(null)
+      const data = await response.json();
 
-	const login = async (e) => {
-		e.preventDefault();
+      if (!response.ok) {
+        console.error("ERROR AL CONSEGUIR LOS SECRETOS", data);
+        setError(data.msg || "No se han podido cargar los secretos");
+        return;
+      }
 
-		try {
+      setSecretos(data.secretos || []);
 
-			if (!baseApiUrl) throw new Error('No se ha conseguido conectar con el backend')
+    } catch (error) {
+      console.error(error);
+      console.log("Me alegro de que te vaya bien de verdad")
+      setError("Error al conseguir secretos");
+    }
+  };
 
-			const response = await fetch(baseApiUrl + "/login", {
-				method: "POST",
-				headers: {
-					"Content-Type": "application/json"
-				},
-				body: JSON.stringify({
-					email: email,
-					password: password
-				})
-			});
+  const logout = () => {
+    setToken("");
+    setSecretos([]);
+  };
 
-			const data = await response.json();
+  useEffect(() => {
+    if (token) getSecrets();
+  }, [token]);
 
-			if (!response.ok) {
-				setError(data.msg)
-				return;
-			}
+  return (
+    <div className="home">
+      <div className="login-container">
+        <div className="login-card">
+          <h2 className="title">Iniciar sesión</h2>
 
-			setUser(data);
-			setToken(data.access_token);
+          <p className="subtitle">
+            {token ? "La iniciada ha sido sesion" : "No puedes ver los secretos"}
+          </p>
 
-			console.log(user)
-			console.log(token)
+          {!token && (
+            <form className="form" onSubmit={login}>
+              <div className="field">
+                <label className="label">Email</label>
+                <input
+                  className="input"
+                  type="email"
+                  placeholder="example@gmail.com"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                />
+              </div>
 
-		} catch (error) {
-			console.error(error);
-			setError(data.msg)
+              <div className="field">
+                <label className="label">Contraseña</label>
+                <input
+                  className="input"
+                  type="password"
+                  placeholder="contraseña"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                />
+              </div>
+
+              {error && <div className="error">{error}</div>}
+
+              <button className="button" type="submit">
+                Login
+              </button>
+            </form>
+          )}
+
+          {token && (
+            <div className="logged-box">
+              <p className="logged-text">Acceso autorizado. Bienvenid@</p>
+              <button className="button button-outline" onClick={logout}>
+                Logout
+              </button>
+            </div>
+          )}
+        </div>
+
+        {token && (
+          <div className="secrets-card">
+            <h3 className="secrets-title">Secretos desbloqueados</h3>
+
+            {secretos.length === 0 ? (
+              <p className="secrets-loading">Cargando secretos...</p>
+            ) : (
+              <ul className="secrets-list">
+                {secretos.map((secreto, index) => (
+                  <li key={index} className="secret-item">
+                    {secreto}
+                  </li>
+                ))}
+              </ul>
+            )}
+          </div>
+        )}
+		{!token && 
+		<div className="demo-box">
+          <p className="demo-text">Usuario demo: <b>example@gmail.co</b></p>
+          <p className="demo-text">Contraseña demo: <b>cositas1</b></p>
+          <p className="demo-text">Prueba a fallar el login para ver el error.</p>
+        </div>
 		}
-	}
-	
-	const getSecrets = async () => {
-		try {
-			const response = await fetch(baseApiUrl + "/secret", {
-				method: "GET",
-				headers: {
-					Authorization: `Bearer ${token}`
-				}
-			});
-			
-			const data = await response.json()
-			
-			if (!response.ok) {
-				console.error("ERROR AL CONSEGUIR LOS SECRETOS", data);
-				return;
-			}
-			
-			setSecretos(data.secretos || [])
-			
-		} catch (error) {
-			console.error(error)
-			setError(data.msg)
-		}
-	}
-
-	const logout = () => {
-		localStorage.removeItem("token");
-		setToken("");
-	};
-
-	useEffect(() => {
-		if (token) getSecrets();
-	}, [token]);
-
-
-	return (
-		<div className="text-center mt-5">
-
-			<h4>Iniciar sesion</h4>
-			<p style={{ wordBreak: "break-all" }}>
-				{token ? "La inición ha sido sesiada" : "❌ No tienes acceso a los secretos 😐"}
-			</p>
-
-			<form onSubmit={login}>
-				<input
-					type="email"
-					placeholder="example@gmail.com"
-					value={email}
-					onChange={(e) => setEmail(e.target.value)}
-				></input>
-
-				<input
-					type="password"
-					placeholder="contraseña"
-					value={password}
-					onChange={(e) => setPassword(e.target.value)}
-				></input>
-				<input type="submit"></input>
-			</form>
-			{error}
-			<hr />
-
-
-			{token &&
-				<button onClick={logout} disabled={!token}>
-					Logout
-				</button>}
-
-			{token &&
-				<div>
-					<h5 className="mt-4">Secretos desbloqueados</h5>
-					<ul>
-						{secretos.map((secreto, index) => (
-							<li key={index}>{secreto}</li>
-						))}
-					</ul>
-				</div>
-			}
-
-			<p>El usuario es: example@gamil.co y la contraseña: cositas1.</p>
-			<p>Pero si quieres ver que pasa si no lo pones bien, pon el correo o la contraseña mal</p>
-
-		</div>
-	);
-}; 
+      </div>
+    </div>
+  );
+};
