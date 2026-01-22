@@ -15,14 +15,21 @@ from flask_jwt_extended import create_access_token
 from flask_jwt_extended import get_jwt_identity
 from flask_jwt_extended import jwt_required
 from flask_jwt_extended import JWTManager
+from api.models import User
+
+from flask_cors import CORS
 
 # from models import Person
+
+
 
 ENV = "development" if os.getenv("FLASK_DEBUG") == "1" else "production"
 static_file_dir = os.path.join(os.path.dirname(
     os.path.realpath(__file__)), '../dist/')
 app = Flask(__name__)
 app.url_map.strict_slashes = False
+
+CORS(app)
 
 # database condiguration
 db_url = os.getenv("DATABASE_URL")
@@ -62,13 +69,47 @@ def handle_invalid_usage(error):
 # create_access_token() function is used to actually generate the JWT.
 @app.route("/login", methods=["POST"])
 def login():
-    username = request.json.get("username", None)
+    email = request.json.get("email", None)
     password = request.json.get("password", None)
-    if username != "test" or password != "test":
-        return jsonify({"msg": "Bad username or password"}), 401
 
-    access_token = create_access_token(identity=username)
+    user = User.query.filter_by(email = email).first()
+
+    if user is None:
+        return jsonify({"msg": "Tienes que registrarte"}), 404
+
+    if password != user.password:
+        return jsonify({"msg": "Creo que esa no es al contraseña maquina"}), 401
+    
+
+    access_token = create_access_token(identity=email)
     return jsonify(access_token=access_token)
+
+# Protect a route with jwt_required, which will kick out requests
+# without a valid JWT present.
+@app.route("/protected", methods=["GET"])
+@jwt_required()
+def protected():
+    # Access the identity of the current user with get_jwt_identity
+    current_user = get_jwt_identity()
+    return jsonify(logged_in_as=current_user), 200
+
+@app.route("/secret", methods=["GET"])
+@jwt_required()
+def get_secret():
+
+    response_body = {
+        "msg": "🔒 TOP SECRET 🕵️‍♂️⚠️ (no apto para mentes débiles) 💀",
+        "secretos": [
+            "El 5G es para controlarnos",
+            "La tierra es plana",
+            "Las palomas son drones",
+            "Los peces son fantasmas",
+            "Los microondas nos frien el cerebro"
+        ]
+    }
+
+    return jsonify(response_body), 200
+
 
 @app.route('/')
 def sitemap():
