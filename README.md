@@ -1,81 +1,95 @@
-# WebApp boilerplate with React JS and Flask API
+# JWT Auth Practice (Flask + React)
 
-Build web applications using React.js for the front end and python/flask for your backend API.
+Este proyecto es una práctica personal para implementar un sistema de **autenticación (Auth)** con **JWT (JSON Web Tokens)** en un backend con **Python (Flask)** y consumirlo desde un frontend hecho en **React**.
 
-- Documentation can be found here: https://4geeks.com/docs/start/react-flask-template
-- Here is a video on [how to use this template](https://www.loom.com/share/f37c6838b3f1496c95111e515e83dd9b)
-- Integrated with Pipenv for package managing.
-- Fast deployment to Render [in just a few steps here](https://4geeks.com/docs/start/deploy-to-render-com).
-- Use of .env file.
-- SQLAlchemy integration for database abstraction.
+El objetivo es entender e implementar el flujo completo de autenticación:
 
-### 1) Installation:
+1. El usuario inicia sesión desde React.
+2. Flask valida credenciales contra base de datos.
+3. Flask genera y devuelve un **token JWT**.
+4. React guarda ese token y lo usa para acceder a endpoints protegidos.
+5. Flask protege rutas usando `@jwt_required()`.
 
-> If you use Github Codespaces (recommended) or Gitpod this template will already come with Python, Node and the Posgres Database installed. If you are working locally make sure to install Python 3.10, Node 
+---
 
-It is recomended to install the backend first, make sure you have Python 3.10, Pipenv and a database engine (Posgress recomended)
+## 🎯 Objetivos del proyecto
 
-1. Install the python packages: `$ pipenv install`
-2. Create a .env file based on the .env.example: `$ cp .env.example .env`
-3. Install your database engine and create your database, depending on your database you have to create a DATABASE_URL variable with one of the possible values, make sure you replace the valudes with your database information:
+- Practicar autenticación con JWT.
+- Aprender a generar tokens desde Flask.
+- Proteger endpoints con `@jwt_required()`.
+- Enviar el JWT desde React en el header `Authorization`.
+- Unir backend + frontend en un flujo real de login y acceso a rutas privadas.
 
-| Engine    | DATABASE_URL                                        |
-| --------- | --------------------------------------------------- |
-| SQLite    | sqlite:////test.db                                  |
-| MySQL     | mysql://username:password@localhost:port/example    |
-| Postgress | postgres://username:password@localhost:5432/example |
+---
 
-4. Migrate the migrations: `$ pipenv run migrate` (skip if you have not made changes to the models on the `./src/api/models.py`)
-5. Run the migrations: `$ pipenv run upgrade`
-6. Run the application: `$ pipenv run start`
+## 🛠️ Tecnologías utilizadas
 
-> Note: Codespaces users can connect to psql by typing: `psql -h localhost -U gitpod example`
+### Backend
+- Python
+- Flask
+- Flask-JWT-Extended
+- Flask-CORS
+- SQLAlchemy
 
-### Undo a migration
+### Frontend
+- React
+- Fetch API
+- CSS simple (sin Bootstrap / sin librerías extra)
 
-You are also able to undo a migration by running
+---
 
-```sh
-$ pipenv run downgrade
+## ✅ Funcionalidades
+
+- Login con email y contraseña.
+- Generación y devolución de token JWT.
+- Endpoint protegido `/secret` accesible solo con token.
+- Renderizado de secretos en el frontend tras login.
+- Logout (limpia token y datos cargados).
+
+---
+
+## 🔐 Endpoints principales
+
+### `POST /login`
+Autentica un usuario y devuelve un token JWT.
+
+**Body:**
+```json
+{
+  "email": "example@gamil.co",
+  "password": "cositas1"
+}
 ```
-
-### Backend Populate Table Users
-
-To insert test users in the database execute the following command:
-
-```sh
-$ flask insert-test-users 5
+**Response:**
+```json
+{
+  "access_token": "xxxxx..."
+}
 ```
+**GET /secret (protegido)**
+Devuelve información privada si el JWT es válido
 
-And you will see the following message:
+## Header necesario
+- Authorization: Bearer <token>
 
-```
-  Creating test users
-  test_user1@test.com created.
-  test_user2@test.com created.
-  test_user3@test.com created.
-  test_user4@test.com created.
-  test_user5@test.com created.
-  Users created successfully!
-```
+## 🚀 Cómo ejecutar el proyecto
+**1) Backend (Flask)**
+Ejecuta el servidor Flask:
 
-### **Important note for the database and the data inside it**
+- python src/app.py
 
-Every Github codespace environment will have **its own database**, so if you're working with more people eveyone will have a different database and different records inside it. This data **will be lost**, so don't spend too much time manually creating records for testing, instead, you can automate adding records to your database by editing ```commands.py``` file inside ```/src/api``` folder. Edit line 32 function ```insert_test_data``` to insert the data according to your model (use the function ```insert_test_users``` above as an example). Then, all you need to do is run ```pipenv run insert-test-data```.
+**2) Frontend (React)**
+Instala dependencias y ejecuta:
 
-### Front-End Manual Installation:
+- npm install
+- npm run dev
 
--   Make sure you are using node version 20 and that you have already successfully installed and runned the backend.
+## ⚙️ Variables de entorno
+**Frontend (.env)**
 
-1. Install the packages: `$ npm install`
-2. Start coding! start the webpack dev server `$ npm run start`
+Configura la URL del backend:
 
-## Publish your website!
+- VITE_BACKEND_URL=http://localhost:3001
 
-This boilerplate it's 100% read to deploy with Render.com and Heroku in a matter of minutes. Please read the [official documentation about it](https://4geeks.com/docs/start/deploy-to-render-com).
-
-### Contributors
-
-This template was built as part of the 4Geeks Academy [Coding Bootcamp](https://4geeksacademy.com/us/coding-bootcamp) by [Alejandro Sanchez](https://twitter.com/alesanchezr) and many other contributors. Find out more about our [Full Stack Developer Course](https://4geeksacademy.com/us/coding-bootcamps/part-time-full-stack-developer), and [Data Science Bootcamp](https://4geeksacademy.com/us/coding-bootcamps/datascience-machine-learning).
-
-You can find other templates and resources like this at the [school github page](https://github.com/4geeksacademy/).
+## ✍️ Autor
+Proyecto realizado por Cristian para practicar autenticación JWT integrando **Flask + React**.
