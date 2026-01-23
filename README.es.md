@@ -89,7 +89,7 @@ Instala dependencias y ejecuta:
 
 Configura la URL del backend:
 
-- VITE_BACKEND_URL=http://localhost:3001
+- VITE_BACKEND_URL=https://psychic-adventure-j64wr79675ph5vvq-3001.app.github.dev
 
 ## ✍️ Autor
 Proyecto realizado por Cristian para practicar autenticación JWT integrando **Flask + React**.
