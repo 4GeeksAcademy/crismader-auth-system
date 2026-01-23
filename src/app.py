@@ -84,6 +84,8 @@ def login():
     access_token = create_access_token(identity=email)
     return jsonify(access_token=access_token)
 
+    
+
 # Protect a route with jwt_required, which will kick out requests
 # without a valid JWT present.
 @app.route("/protected", methods=["GET"])
@@ -98,7 +100,7 @@ def protected():
 def get_secret():
 
     response_body = {
-        "msg": "🔒 TOP SECRET 🕵️‍♂️⚠️ (no apto para mentes débiles) 💀",
+        "msg": "TOP SECRET (no apto para débiles)",
         "secretos": [
             "El 5G es para controlarnos",
             "La tierra es plana",

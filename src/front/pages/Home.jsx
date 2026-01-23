@@ -1,17 +1,21 @@
 import React, { useEffect, useState } from "react";
 import "../index.css";
+import { useNavigate } from "react-router-dom";
+import { Singup } from "./Single";
 
 export const Home = () => {
   const baseApiUrl = import.meta.env.VITE_BACKEND_URL;
 
   const [user, setUser] = useState(null);
-  const [token, setToken] = useState("");
+  const [token, setToken] = useState(localStorage.getItem("token") || "");
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
 
   const [secretos, setSecretos] = useState([]);
   const [error, setError] = useState(null);
+
+  const navigate = useNavigate();
 
   const login = async (e) => {
     e.preventDefault();
@@ -33,10 +37,10 @@ export const Home = () => {
 
       const data = await response.json();
 
-      if(!email || !password){
+      if (!email || !password) {
         alert("Tienes que rellenar todos los campos")
         return
-      } 
+      }
 
       if (!response.ok) {
         setError(data.msg || "Error en login");
@@ -45,6 +49,8 @@ export const Home = () => {
 
       setUser(data);
       setToken(data.access_token);
+
+      localStorage.setItem("token", data.access_token)
 
 
     } catch (error) {
@@ -79,6 +85,13 @@ export const Home = () => {
       setError("Error al conseguir secretos");
     }
   };
+
+  const singup = () => {
+    setEmail("")
+    setPassword("")
+
+    navigate("/singup")
+  }
 
   const logout = () => {
     setToken("");
@@ -128,7 +141,12 @@ export const Home = () => {
               <button className="button" type="submit">
                 Login
               </button>
+              
+              <button className="button button-outline" onClick={singup}>
+                Crear Cuenta
+              </button>
             </form>
+
           )}
 
           {token && (
@@ -158,13 +176,13 @@ export const Home = () => {
             )}
           </div>
         )}
-		{!token && 
-		<div className="demo-box">
-          <p className="demo-text">Usuario demo: <b>example@gmail.co</b></p>
-          <p className="demo-text">Contraseña demo: <b>cositas1</b></p>
-          <p className="demo-text">Prueba a fallar el login para ver el error.</p>
-        </div>
-		}
+        {!token &&
+          <div className="demo-box">
+            <p className="demo-text">Usuario demo: <b>example@gmail.co</b></p>
+            <p className="demo-text">Contraseña demo: <b>cositas1</b></p>
+            <p className="demo-text">Prueba a fallar el login para ver el error.</p>
+          </div>
+        }
       </div>
     </div>
   );

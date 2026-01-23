@@ -1,27 +1,90 @@
 import { Link, useParams } from "react-router-dom";
 import PropTypes from "prop-types";
-import rigoImageUrl from "../assets/img/rigo-baby.jpg"
 import useGlobalReducer from "../hooks/useGlobalReducer";
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 
-export const Single = props => {
-  const { store } = useGlobalReducer()
+export const Singup = () => {
+    const baseApiUrl = import.meta.env.VITE_BACKEND_URL;
 
-  const { theId } = useParams()
-  const singleTodo = store.todos.find(todo => todo.id === parseInt(theId));
+    const[email, setEmail] = useState("");
+    const[password, setPassword] = useState("");
 
-  return (
-    <div className="container text-center">
-      <h1 className="display-4">Todo: {singleTodo?.title}</h1>
-      <hr className="my-4" /> 
-      <Link to="/">
-        <span className="btn btn-primary btn-lg" href="#" role="button">
-          Back home
-        </span>
-      </Link>
-    </div>
-  );
-};
+    const [user, setUser] = useState(null);
+    const [token, setToken] = useState("");
 
-Single.propTypes = {
-  match: PropTypes.object
+    const [error, setError] = useState(false);
+
+    const navigate = useNavigate()
+
+    const create_user = () => {
+      fetch(baseApiUrl + "/singup", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          email: email,
+          password: password
+        })
+      })
+    }
+
+    const login = (e) =>{
+      e.preventDefault()
+
+      setError(false)
+
+      fetch(baseApiUrl + "/singup", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify({
+          email: email,
+          password: password
+        })
+        .then(res => res.json())
+        .then(data => localStorage.setItem("token", data.access_token))
+        .catch(err => console.error(err))
+      })
+
+      setTimeout(() => {
+        navigate("/")
+      }, 2000);
+    }
+
+    return(
+      <>
+      <form className="form" onSubmit={login}>
+              <div className="field">
+                <label className="label">Email</label>
+                <input
+                  className="input"
+                  type="email"
+                  placeholder="example@gmail.com"
+                  value={email}
+                  onChange={(e) => setEmail(e.target.value)}
+                />
+              </div>
+
+              <div className="field">
+                <label className="label">Contraseña</label>
+                <input
+                  className="input"
+                  type="password"
+                  placeholder="contraseña"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                />
+              </div>
+
+              {error && <div className="error">{error}</div>}
+
+              <button className="button" type="submit">
+                Singup
+              </button>
+            </form>
+      </>
+    )
 };
