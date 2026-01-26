@@ -1,12 +1,13 @@
 import React, { useEffect, useState } from "react";
 import "../index.css";
 import { useNavigate } from "react-router-dom";
-import { Singup } from "./Single";
+import { Singup } from "./Singup";
 
 export const Home = () => {
   const baseApiUrl = import.meta.env.VITE_BACKEND_URL;
 
   const [user, setUser] = useState(null);
+  
   const [token, setToken] = useState(localStorage.getItem("token") || "");
 
   const [email, setEmail] = useState("");
@@ -141,7 +142,7 @@ export const Home = () => {
               <button className="button" type="submit">
                 Login
               </button>
-              
+
               <button className="button button-outline" onClick={singup}>
                 Crear Cuenta
               </button>

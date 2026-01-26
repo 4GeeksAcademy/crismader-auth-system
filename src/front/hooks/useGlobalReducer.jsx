@@ -1,19 +1,28 @@
-// Import necessary hooks and functions from React.
-import { useContext, useReducer, createContext } from "react";
-import storeReducer, { initialStore } from "../store" 
+import { createContext, useState, useEffect } from "react";
 
-const StoreContext = createContext()
+export const AuthContext = createContext();
 
-export function StoreProvider({ children }) {
+export const AuthProvider = ({ children }) => {
+  const [token, setToken] = useState("");
 
-    const [store, dispatch] = useReducer(storeReducer, initialStore())
+  useEffect(() => {
+    const saved = localStorage.getItem("token");
+    if (saved) setToken(saved);
+  }, []);
 
-    return <StoreContext.Provider value={{ store, dispatch }}>
-        {children}
-    </StoreContext.Provider>
-}
+  const login = (newToken) => {
+    localStorage.setItem("token", newToken);
+    setToken(newToken);
+  };
 
-export default function useGlobalReducer() {
-    const { dispatch, store } = useContext(StoreContext)
-    return { dispatch, store };
-}
+  const logout = () => {
+    localStorage.removeItem("token");
+    setToken("");
+  };
+
+  return (
+    <AuthContext.Provider value={{ token, login, logout }}>
+      {children}
+    </AuthContext.Provider>
+  );
+};

@@ -1,10 +1,11 @@
 // Import necessary components from react-router-dom and other parts of the application.
 import { Link } from "react-router-dom";
-import useGlobalReducer from "../hooks/useGlobalReducer";  // Custom hook for accessing the global state.
+import { AuthProvider } from "../hooks/useGlobalReducer";
+import { useContext } from "react";
 
 export const Demo = () => {
   // Access the global state and dispatch function using the useGlobalReducer hook.
-  const { store, dispatch } = useGlobalReducer()
+  const { store, dispatch } = useContext(AuthProvider)
 
   return (
     <div className="container">

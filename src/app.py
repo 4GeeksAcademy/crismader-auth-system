@@ -29,7 +29,7 @@ static_file_dir = os.path.join(os.path.dirname(
 app = Flask(__name__)
 app.url_map.strict_slashes = False
 
-CORS(app)
+CORS(app, resources={r"/*": {"origins": "*"}})
 
 # database condiguration
 db_url = os.getenv("DATABASE_URL")
@@ -83,6 +83,24 @@ def login():
 
     access_token = create_access_token(identity=email)
     return jsonify(access_token=access_token)
+
+@app.route("/singup", methods=["POST"])
+def singup():
+    body = request.get_json()
+    user = User.query.filter_by(email = body["email"]).first()
+
+    if user:
+        return jsonify({"msg": "Ya existe un usuario con este nombre"})
+
+    user = User(email = body["email"], password = body["password"], is_active = True)
+    db.session.add(user)
+    db.session.commit()
+
+    response_body = {
+        "msg": "Usuario creado"
+    }    
+
+    return jsonify(response_body), 200
 
     
 
