@@ -115,7 +115,7 @@ export const Home = () => {
               <p className="secrets-loading">Cargando secretos...</p>
             ) : (
               <ul className="secrets-list">
-                {secretos.map((s, i) => <li key={i} className="secret-item">{s}</li>)}
+                {secretos.map((secrets, index) => <li key={index} className="secret-item">{secrets}</li>)}
               </ul>
             )}
           </div>
@@ -125,6 +125,7 @@ export const Home = () => {
           <div className="demo-box">
             <p className="demo-text">Usuario demo: <b>example@gmail.co</b></p>
             <p className="demo-text">Contraseña demo: <b>cositas1</b></p>
+            <p className="demo-text">Prueba a fallar el login para ver el error.</p>
           </div>
         )}
       </div>
